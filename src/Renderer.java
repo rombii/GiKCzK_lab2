@@ -14,7 +14,7 @@ public class Renderer {
     public int w = 200;
 
     private String filename;
-    private LineAlgo lineAlgo = LineAlgo.NAIVE;
+    private LineAlgo lineAlgo = LineAlgo.BRESENHAM;
 
     public Renderer(String filename) {
         render = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
@@ -149,19 +149,87 @@ public class Renderer {
 
         int dx = x1-x0;
         int dy = y1-y0;
+        if(dx == 0) {
+            for(int i = Math.min(y0,y1); i < Math.max(y0,y1); i++){
+                drawPoint(x0,i);
+            }
+        }
+        if(dy == 0) {
+            for(int i = Math.min(x0,x1); i < Math.max(x0,x1); i++){
+                drawPoint(i,y0);
+            }
+        }
         float derr = Math.abs(dy/(float)(dx));
         float err = 0;
-
-        int y = y0;
-
-        for (int x=x0; x<=x1; x++) {
-            render.setRGB(x, y, white);
-            err += derr;
-            if (err > 0.5) {
-                y += (y1 > y0 ? 1 : -1);
-                err -= 1.;
+        if(Math.abs(derr) == 1) {
+            if(x0<x1){
+                int x = x0;
+                for (int y = y0; y <= y1; y++) {
+                    drawPoint(x,y);
+                    x++;
+                }
+                for (int y = y0; y >= y1; y--) {
+                    drawPoint(x,y);
+                    x++;
+                }
             }
-        } // Oktanty:
+            if(x0>x1){
+                int x = x0;
+                for (int y = y0; y <= y1; y++) {
+                    drawPoint(x,y);
+                    x--;
+                }
+                for (int y = y0; y >= y1; y--) {
+                    drawPoint(x,y);
+                    x--;
+                }
+            }
+        }
+        if(derr<1) {
+            int y = y0;
+            if(x0<x1) {
+                for (int x = x0; x <= x1; x++) {
+                    render.setRGB(x, y, white);
+                    err += derr;
+                    if (err > 0.5) {
+                        y += (y1 > y0 ? 1 : -1);
+                        err -= 1.;
+                    }
+                }
+            } else {
+                for (int x = x0; x >= x1; x--) {
+                    render.setRGB(x, y, white);
+                    err += derr;
+                    if (err > 0.5) {
+                        y += (y1 > y0 ? 1 : -1);
+                        err -= 1.;
+                    }
+                }
+            }
+
+        }else if(derr>1) {
+            int x = x0;
+            if(y0<y1) {
+                for (int y = y0; y <= y1; y++) {
+                    render.setRGB(x, y, white);
+                    err += derr%1;
+                    if (err > 0.5) {
+                        x += (x1 > x0 ? 1 : -1);
+                        err -= 1.;
+                    }
+                }
+            } else {
+                for (int y = y0; y >= y1; y--) {
+                    render.setRGB(x, y, white);
+                    err += derr%1;
+                    if (err > 0.5) {
+                        x += (x1 > x0 ? 1 : -1);
+                        err -= 1.;
+                    }
+                }
+            }
+        }
+        // Oktanty:
     }
 
     public void drawLineBresenhamInt(int x0, int y0, int x1, int y1) {
