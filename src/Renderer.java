@@ -107,10 +107,9 @@ public class Renderer {
 
             float a = dy/(float)dx;
             float b = y0-(a*x0);
-            System.out.println(y0);
             while(x0 != x1){
                 if(Math.abs(a)>1) {
-                    float ytemp = y0;
+                    float ytemp;
                     if(x0<x1) {
                         ytemp = (x0 + 1) * a + b;
                     }
@@ -139,7 +138,6 @@ public class Renderer {
                 }
                 drawPoint(x0,y0);
             }
-            System.out.println(y0 + " " + y1);
             drawPoint(x1,y1);
 
         }
