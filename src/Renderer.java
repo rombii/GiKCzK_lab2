@@ -14,7 +14,7 @@ public class Renderer {
     public int w = 200;
 
     private String filename;
-    private LineAlgo lineAlgo = LineAlgo.BRESENHAM;
+    private LineAlgo lineAlgo = LineAlgo.BRESENHAM_INT;
 
     public Renderer(String filename) {
         render = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
@@ -229,11 +229,85 @@ public class Renderer {
                 }
             }
         }
-        // Oktanty:
     }
 
     public void drawLineBresenhamInt(int x0, int y0, int x1, int y1) {
-        // TODO: zaimplementuj
+        int dx = x1 - x0;
+        int dy = y1 - y0;
+        if(dx == 0) {
+            for(int i = Math.min(y0,y1); i < Math.max(y0,y1); i++){
+                drawPoint(x0,i);
+            }
+        }
+        if(dy == 0) {
+            for(int i = Math.min(x0,x1); i < Math.max(x0,x1); i++){
+                drawPoint(i,y0);
+            }
+        } else {
+            if(Math.abs(dy) < Math.abs(dx)) {
+                int x = x0;
+                int y = y0;
+                if(x0 > x1) {
+                    x = x1;
+                    y = y1;
+                    dx = x0 - x1;
+                    dy = y0 - y1;
+                }
+                int yi = 1;
+                if(dy < 0) {
+                    yi = -1;
+                    dy = dy*(-1);
+                }
+                int P = 2 * dy - dx;
+                while(x != Math.max(Math.abs(x0),Math.abs(x1))) {
+                    drawPoint(x, y);
+                    x++;
+                    if(P < 0) {
+                        P = P + 2 * dy;
+                    } else {
+                        P = P + 2 * dy - 2 * dx;
+                        y+=yi;
+                    }
+                }
+            } else if(Math.abs(dy) > Math.abs(dx)) {
+                int x = x0;
+                int y = y0;
+                if(y0 > y1) {
+                    x = x1;
+                    y = y1;
+                    dx = x0 - x1;
+                    dy = y0 - y1;
+                }
+                int xi = 1;
+                if (dx < 0) {
+                    xi = -1;
+                    dx = dx*(-1);
+                }
+                int P = 2 * dx - dy;
+                while(y != Math.max(Math.abs(y0),Math.abs(y1))) {
+                    drawPoint(x, y);
+                    y++;
+                    if(P < 0) {
+                        P = P + 2 * dx;
+                    } else {
+                        P = P + 2 * dx - 2 * dy;
+                        x+=xi;
+                    }
+                }
+            } else {
+                while(x0 != x1) {
+                    drawPoint(x0,y0);
+                    if(x0 > x1)
+                        x0--;
+                    else
+                        x0++;
+                    if(y0 > y1)
+                        y0--;
+                    else
+                        y0++;
+                }
+            }
+        }
     }
 
     public void save() throws IOException {
