@@ -20,11 +20,17 @@ public class Renderer {
         this.filename = filename;
     }
 
-    public Renderer(String filename, int h, int w) {
+    public Renderer(String filename, Integer h, Integer w) {
         render = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
         this.filename = filename;
-        this.h = h;
-        this.w = w;
+        if(h != null)
+            this.h = h;
+        else
+            this.h = 200;
+        if(w != null)
+            this.w = w;
+        else
+            this.w = 200;
     }
 
     public void drawPoint(int x, int y) {
@@ -43,7 +49,7 @@ public class Renderer {
     }
 
     public void drawLineNaive(int x0, int y0, int x1, int y1) throws Exception {
-        if(x0 > 200 || y0 > 200 || x1 > 200 || y1 > 200) {
+        if(x0 > this.w || y0 > this.h || x1 > this.w || y1 > this.h) {
             throw new Exception("Współrzędne poza zakresem");
         }
         int dx = x1 - x0;
