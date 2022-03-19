@@ -3,6 +3,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.Line;
 
 public class Renderer {
 
@@ -21,16 +22,21 @@ public class Renderer {
     }
 
     public Renderer(String filename, Integer h, Integer w) {
-        render = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+        render = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         this.filename = filename;
-        if(h != null)
-            this.h = h;
-        else
-            this.h = 200;
-        if(w != null)
-            this.w = w;
-        else
-            this.w = 200;
+        this.h = h;
+        this.w = w;
+    }
+
+    public Renderer(String filename, Integer h, Integer w, String lineAlgo) {
+        render = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        this.filename = filename;
+        this.h = h;
+        this.w = w;
+        if(lineAlgo.equals("LINE_BRESENHAM"))
+            this.lineAlgo = LineAlgo.BRESENHAM;
+        if(lineAlgo.equals("LINE_BRESENHAM_INT"))
+            this.lineAlgo = LineAlgo.BRESENHAM_INT;
     }
 
     public void drawPoint(int x, int y) {
@@ -38,14 +44,14 @@ public class Renderer {
         render.setRGB(x, y, white);
     }
 
-    public void drawLine(int x0, int y0, int x1, int y1, LineAlgo lineAlgo) {
+    public void drawLine(int x0, int y0, int x1, int y1) {
         try {
-            if (lineAlgo == LineAlgo.NAIVE) drawLineNaive(x0, y0, x1, y1);
+            if (this.lineAlgo == LineAlgo.NAIVE) drawLineNaive(x0, y0, x1, y1);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        if(lineAlgo == LineAlgo.BRESENHAM) drawLineBresenham(x0, y0, x1, y1);
-        if(lineAlgo == LineAlgo.BRESENHAM_INT) drawLineBresenhamInt(x0, y0, x1, y1);
+        if(this.lineAlgo == LineAlgo.BRESENHAM) drawLineBresenham(x0, y0, x1, y1);
+        if(this.lineAlgo == LineAlgo.BRESENHAM_INT) drawLineBresenhamInt(x0, y0, x1, y1);
     }
 
     public void drawLineNaive(int x0, int y0, int x1, int y1) throws Exception {
@@ -151,6 +157,23 @@ public class Renderer {
 
     public void drawLineBresenham(int x0, int y0, int x1, int y1) {
         // TODO: zaimplementuj
+        int white = 255 | (255 << 8) | (255 << 16) | (255 << 24);
+
+        int dx = x1-x0;
+        int dy = y1-y0;
+        float derr = Math.abs(dy/(float)(dx));
+        float err = 0;
+
+        int y = y0;
+
+        for (int x=x0; x<=x1; x++) {
+            render.setRGB(x, y, white);
+            err += derr;
+            if (err > 0.5) {
+                y += (y1 > y0 ? 1 : -1);
+                err -= 1.;
+            }
+        } // Oktanty:
     }
 
     public void drawLineBresenhamInt(int x0, int y0, int x1, int y1) {
@@ -166,8 +189,7 @@ public class Renderer {
     public void clear() {
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
-                int black = 0 | (0 << 8) | (0 << 16) | (255 << 24);
-                render.setRGB(x, y, black);
+                render.setRGB(x, y, (0) | (255 << 24));
             }
         }
     }
