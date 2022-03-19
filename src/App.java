@@ -8,12 +8,31 @@ public class App {
 
     public static void main(String[] args) {
         Renderer mainRenderer = new Renderer(System.getProperty("user.home")+"/render.png");
-
         if(args.length != 0) {
             mainRenderer = new Renderer(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
         }
         mainRenderer.clear();
-        mainRenderer.drawPoint(100, 100);
+        try {
+            mainRenderer.drawLineNaive(100, 100, 150, 100);
+            mainRenderer.drawLineNaive(100, 100, 100, 150);
+            mainRenderer.drawLineNaive(50, 100, 100, 100);
+            mainRenderer.drawLineNaive(100, 50, 100, 100);
+
+            mainRenderer.drawLineNaive(100, 100, 150, 120);
+            mainRenderer.drawLineNaive(100, 100, 120, 150);
+
+            mainRenderer.drawLineNaive(100, 100, 80, 150);
+            mainRenderer.drawLineNaive(100, 100, 50, 120);
+
+            mainRenderer.drawLineNaive(100, 100, 50, 80);
+            mainRenderer.drawLineNaive(100, 100, 80, 50);
+
+            mainRenderer.drawLineNaive(100, 100, 150, 80);
+            mainRenderer.drawLineNaive(100, 100, 120, 50);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         try {
             mainRenderer.save();
         } catch (IOException ex) {

@@ -33,13 +33,114 @@ public class Renderer {
     }
 
     public void drawLine(int x0, int y0, int x1, int y1, LineAlgo lineAlgo) {
-        if(lineAlgo == LineAlgo.NAIVE) drawLineNaive(x0, y0, x1, y1);
+        try {
+            if (lineAlgo == LineAlgo.NAIVE) drawLineNaive(x0, y0, x1, y1);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         if(lineAlgo == LineAlgo.BRESENHAM) drawLineBresenham(x0, y0, x1, y1);
         if(lineAlgo == LineAlgo.BRESENHAM_INT) drawLineBresenhamInt(x0, y0, x1, y1);
     }
 
-    public void drawLineNaive(int x0, int y0, int x1, int y1) {
-        // TODO: zaimplementuj
+    public void drawLineNaive(int x0, int y0, int x1, int y1) throws Exception {
+        if(x0 > 200 || y0 > 200 || x1 > 200 || y1 > 200) {
+            throw new Exception("Współrzędne poza zakresem");
+        }
+        int dx = x1 - x0;
+        int dy = y1 - y0;
+        if (dx == 0) { // linia pionowa
+            while (y0 != y1) {
+                if (y0 < y1) {
+                    y0++;
+                } else {
+                    y0--;
+                }
+                drawPoint(x0, y0);
+            }
+        }
+        else if (dy == 0) { // linia pozioma
+            while (x0 != x1) {
+                if (x0 < x1) {
+                    x0++;
+                } else {
+                    x0--;
+                }
+                drawPoint(x0, y0);
+            }
+        }
+        else { // ukosna
+            float a = (float) dy / (float) dx;
+            float b = y0 - (a*x0);
+            if(Math.abs(a) >= 1) { //wzrost maly/duzy
+                drawPoint(x0,y0);
+                while (x0 != x1) {
+                    if ((a * x0 + b) % 1 < 0.5) {
+                        if (x0 < x1) {
+                            y1 = (int) Math.floor(a * (x0 + 1) + b);
+                        } else {
+                            y1 = (int) Math.floor(a * (x0 - 1) + b);
+                        }
+                        for (int i = y0; i < y1; i++) {
+                            drawPoint(x0, i);
+                        }
+                        for (int i = y0; i > y1; i--) {
+                            drawPoint(x0, i);
+                        }
+                    } else {
+                        if (x0 < x1) {
+                            y1 = (int) Math.ceil(a * (x0 + 1) + b);
+                        } else {
+                            y1 = (int) Math.ceil(a * (x0 - 1) + b);
+                        }
+                        for (int i = y0; i < y1; i++) {
+                            drawPoint(x0, i);
+                        }
+                        for (int i = y0; i > y1; i--) {
+                            drawPoint(x0, i);
+                        }
+                    }
+                    y0 = y1;
+                    if (x0 < x1) {
+                        x0++;
+                    } else {
+                        x0--;
+                    }
+                    drawPoint(x0, y0);
+                }
+            }
+            else {
+                //y0++;
+                drawPoint(x0,y0);
+                while (y0 != y1) {
+                    if ((y0-b)/a % 1 < 0.5) {
+                        x1 = (int) Math.floor((y0-b)/a);
+                        for (int i = x0; i < x1; i++) {
+                            drawPoint(i, y0);
+                        }
+                        for (int i = x0; i > x1; i--) {
+                            drawPoint(i, y0);
+                        }
+                    } else {
+                        x1 = (int) Math.ceil((y0-b)/a);
+                        for (int i = x0; i < x1; i++) {
+                            drawPoint(i, y0);
+                        }
+                        for (int i = x0; i > x1; i--) {
+                            drawPoint(i, y0);
+                        }
+                    }
+                    x0 = x1;
+                    if (y0 < y1) {
+                        y0++;
+                    } else {
+                        y0--;
+                    }
+                    drawPoint(x0, y0);
+                    //render.setRGB(x0,y0,255 | (0 << 8) | (255 << 16) | (255 << 24));
+                }
+            }
+        }
+        render.setRGB(100,100,128 | (0 << 8) | (255 << 16) | (255 << 24));
     }
 
     public void drawLineBresenham(int x0, int y0, int x1, int y1) {
