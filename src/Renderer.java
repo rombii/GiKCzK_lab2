@@ -81,29 +81,67 @@ public class Renderer {
             }
         }
         else { // ukosna
-            float a = dy / dx;
-            int step = Math.max(Math.abs(dx),Math.abs(dy));
-            float xinc = dx/(float)step;
-            float yinc = dy/(float)step;
-            float xtemp = x0;
-            float ytemp = y0;
-            for(int i = 0; i < step; i++) {
-                drawPoint(x0, y0);
-                xtemp += xinc;
-                ytemp += yinc;
-                if(Math.abs(xtemp)%1 >= 0.5) {
-                    x0=(int) Math.ceil(xtemp);
+//            algorytm dda
+//            int step = Math.max(Math.abs(dx),Math.abs(dy));
+//            float xinc = dx/(float)step;
+//            float yinc = dy/(float)step;
+//            float xtemp = x0;
+//            float ytemp = y0;
+//            for(int i = 0; i < step; i++) {
+//                drawPoint(x0, y0);
+//                xtemp += xinc;
+//                ytemp += yinc;
+//                if(Math.abs(xtemp)%1 >= 0.5) {
+//                    x0=(int) Math.ceil(xtemp);
+//                }
+//                else {
+//                    x0=(int) Math.floor(xtemp);
+//                }
+//                if(Math.abs(ytemp)%1 >= 0.5) {
+//                    y0=(int) Math.ceil(ytemp);
+//                }
+//                else {
+//                    y0=(int) Math.floor(ytemp);
+//                }
+//            }
+
+            float a = dy/(float)dx;
+            float b = y0-(a*x0);
+            System.out.println(y0);
+            while(x0 != x1){
+                if(Math.abs(a)>1) {
+                    float ytemp = y0;
+                    if(x0<x1) {
+                        ytemp = (x0 + 1) * a + b;
+                    }
+                    else {
+                        ytemp = (x0 - 1) * a + b;
+                    }
+                    if(y0 < ytemp){
+                        for (int y = y0; y < (int)ytemp; y++) {
+                            drawPoint(x0, y);
+                        }
+                    } else {
+                        for (int y = y0; y > (int)ytemp; y--) {
+                            drawPoint(x0, y);
+                        }
+                    }
                 }
-                else {
-                    x0=(int) Math.floor(xtemp);
+                if(x0>x1) {
+                    x0--;
+                } else {
+                    x0++;
                 }
-                if(Math.abs(ytemp)%1 >= 0.5) {
-                    y0=(int) Math.ceil(ytemp);
+                if((a*x0+b)%1 > 0.5){
+                    y0 = (int) Math.ceil(a*x0+b);
+                } else {
+                    y0 = (int) Math.floor(a*x0+b);
                 }
-                else {
-                    y0=(int) Math.floor(ytemp);
-                }
+                drawPoint(x0,y0);
             }
+            System.out.println(y0 + " " + y1);
+            drawPoint(x1,y1);
+
         }
         render.setRGB(100,100,128 | (0 << 8) | (255 << 16) | (255 << 24));
     }
