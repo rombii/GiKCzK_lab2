@@ -10,15 +10,34 @@ public class App {
         Renderer mainRenderer = new Renderer(System.getProperty("user.home")+"/render.png");
         if(args.length != 0) {
             mainRenderer = new Renderer(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-            if(args.length == 4) {
+            if (args.length == 4) {
                 mainRenderer = new Renderer(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), args[3]);
             }
         }
-        System.out.println(args[1] + " - " + mainRenderer.h + " " + args[2] + " - " + mainRenderer.w);
-
         mainRenderer.clear();
         try {
-            mainRenderer.drawLine(100,100,110,80);
+            mainRenderer.drawLine(100, 100, 150, 100);
+            mainRenderer.drawLine(100, 100, 100, 150);
+            mainRenderer.drawLine(50, 100, 100, 100);
+            mainRenderer.drawLine(100, 50, 100, 100);
+
+            mainRenderer.drawLine(100, 100, 150, 120);
+            mainRenderer.drawLine(100, 100, 150, 150);
+            mainRenderer.drawLine(100, 100, 120, 150);
+
+            mainRenderer.drawLine(100, 100, 80, 150);
+            mainRenderer.drawLine(100, 100, 50, 150);
+            mainRenderer.drawLine(100, 100, 50, 120);
+
+            mainRenderer.drawLine(100, 100, 50, 80);
+            mainRenderer.drawLine(100, 100, 50, 50);
+            mainRenderer.drawLine(100, 100, 80, 50);
+
+            mainRenderer.drawLine(100, 100, 150, 80);
+            mainRenderer.drawLine(100, 100, 150, 50);
+            mainRenderer.drawLine(100, 100, 120, 50);
+
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -81,74 +81,27 @@ public class Renderer {
             }
         }
         else { // ukosna
-            float a = (float) dy / (float) dx;
-            float b = y0 - (a*x0);
-            if(Math.abs(a) >= 1) { //wzrost maly/duzy
-                drawPoint(x0,y0);
-                while (x0 != x1) {
-                    if ((a * x0 + b) % 1 < 0.5) {
-                        if (x0 < x1) {
-                            y1 = (int) Math.floor(a * (x0 + 1) + b);
-                        } else {
-                            y1 = (int) Math.floor(a * (x0 - 1) + b);
-                        }
-                        for (int i = y0; i < y1; i++) {
-                            drawPoint(x0, i);
-                        }
-                        for (int i = y0; i > y1; i--) {
-                            drawPoint(x0, i);
-                        }
-                    } else {
-                        if (x0 < x1) {
-                            y1 = (int) Math.ceil(a * (x0 + 1) + b);
-                        } else {
-                            y1 = (int) Math.ceil(a * (x0 - 1) + b);
-                        }
-                        for (int i = y0; i < y1; i++) {
-                            drawPoint(x0, i);
-                        }
-                        for (int i = y0; i > y1; i--) {
-                            drawPoint(x0, i);
-                        }
-                    }
-                    y0 = y1;
-                    if (x0 < x1) {
-                        x0++;
-                    } else {
-                        x0--;
-                    }
-                    drawPoint(x0, y0);
+            float a = dy / dx;
+            int step = Math.max(Math.abs(dx),Math.abs(dy));
+            float xinc = dx/(float)step;
+            float yinc = dy/(float)step;
+            float xtemp = x0;
+            float ytemp = y0;
+            for(int i = 0; i < step; i++) {
+                drawPoint(x0, y0);
+                xtemp += xinc;
+                ytemp += yinc;
+                if(Math.abs(xtemp)%1 >= 0.5) {
+                    x0=(int) Math.ceil(xtemp);
                 }
-            }
-            else {
-                //y0++;
-                drawPoint(x0,y0);
-                while (y0 != y1) {
-                    if ((y0-b)/a % 1 < 0.5) {
-                        x1 = (int) Math.floor((y0-b)/a);
-                        for (int i = x0; i < x1; i++) {
-                            drawPoint(i, y0);
-                        }
-                        for (int i = x0; i > x1; i--) {
-                            drawPoint(i, y0);
-                        }
-                    } else {
-                        x1 = (int) Math.ceil((y0-b)/a);
-                        for (int i = x0; i < x1; i++) {
-                            drawPoint(i, y0);
-                        }
-                        for (int i = x0; i > x1; i--) {
-                            drawPoint(i, y0);
-                        }
-                    }
-                    x0 = x1;
-                    if (y0 < y1) {
-                        y0++;
-                    } else {
-                        y0--;
-                    }
-                    drawPoint(x0, y0);
-                    //render.setRGB(x0,y0,255 | (0 << 8) | (255 << 16) | (255 << 24));
+                else {
+                    x0=(int) Math.floor(xtemp);
+                }
+                if(Math.abs(ytemp)%1 >= 0.5) {
+                    y0=(int) Math.ceil(ytemp);
+                }
+                else {
+                    y0=(int) Math.floor(ytemp);
                 }
             }
         }
@@ -156,7 +109,6 @@ public class Renderer {
     }
 
     public void drawLineBresenham(int x0, int y0, int x1, int y1) {
-        // TODO: zaimplementuj
         int white = 255 | (255 << 8) | (255 << 16) | (255 << 24);
 
         int dx = x1-x0;
