@@ -14,7 +14,7 @@ public class Renderer {
     public int w = 200;
 
     private String filename;
-    private LineAlgo lineAlgo = LineAlgo.BRESENHAM_INT;
+    private LineAlgo lineAlgo = LineAlgo.NAIVE;
 
     public Renderer(String filename) {
         render = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
@@ -108,15 +108,15 @@ public class Renderer {
             float a = dy/(float)dx;
             float b = y0-(a*x0);
             while(x0 != x1){
-                if(Math.abs(a)>1) {
+                if(Math.abs(a)>1) {//duzy spadek/wzrost
                     float ytemp;
-                    if(x0<x1) {
+                    if(x0<x1) {//sprawdzanie w którą stronę linia jest rysowania zakładając punkt x0 jako początek układu
                         ytemp = (x0 + 1) * a + b;
                     }
                     else {
                         ytemp = (x0 - 1) * a + b;
                     }
-                    if(y0 < ytemp){
+                    if(y0 < ytemp){//dopełnianie linii aby nie było przerw
                         for (int y = y0; y < (int)ytemp; y++) {
                             drawPoint(x0, y);
                         }
@@ -126,12 +126,12 @@ public class Renderer {
                         }
                     }
                 }
-                if(x0>x1) {
+                if(x0>x1) {//sprawdzanie w którą stronę rysujemy linie
                     x0--;
                 } else {
                     x0++;
                 }
-                if((a*x0+b)%1 > 0.5){
+                if((a*x0+b)%1 > 0.5){//zaokrąglenie do pełnego pixela
                     y0 = (int) Math.ceil(a*x0+b);
                 } else {
                     y0 = (int) Math.floor(a*x0+b);
@@ -141,7 +141,6 @@ public class Renderer {
             drawPoint(x1,y1);
 
         }
-        render.setRGB(100,100,128 | (0 << 8) | (255 << 16) | (255 << 24));
     }
 
     public void drawLineBresenham(int x0, int y0, int x1, int y1) {
@@ -150,18 +149,18 @@ public class Renderer {
         int dx = x1-x0;
         int dy = y1-y0;
         if(dx == 0) {
-            for(int i = Math.min(y0,y1); i < Math.max(y0,y1); i++){
+            for(int i = Math.min(y0,y1); i < Math.max(y0,y1); i++){//linia pionowa
                 drawPoint(x0,i);
             }
         }
         if(dy == 0) {
-            for(int i = Math.min(x0,x1); i < Math.max(x0,x1); i++){
+            for(int i = Math.min(x0,x1); i < Math.max(x0,x1); i++){//linia pozioma
                 drawPoint(i,y0);
             }
         }
         float derr = Math.abs(dy/(float)(dx));
         float err = 0;
-        if(Math.abs(derr) == 1) {
+        if(Math.abs(derr) == 1) {//linia gdzie a = 1 i b = 0;
             if(x0<x1){
                 int x = x0;
                 for (int y = y0; y <= y1; y++) {
@@ -185,7 +184,7 @@ public class Renderer {
                 }
             }
         }
-        if(derr<1) {
+        if(derr<1) {//oktan 1, 4, 5, 8
             int y = y0;
             if(x0<x1) {
                 for (int x = x0; x <= x1; x++) {
@@ -207,7 +206,7 @@ public class Renderer {
                 }
             }
 
-        }else if(derr>1) {
+        }else if(derr>1) {//oktan 2, 3, 6, 7
             int x = x0;
             if(y0<y1) {
                 for (int y = y0; y <= y1; y++) {
@@ -235,16 +234,16 @@ public class Renderer {
         int dx = x1 - x0;
         int dy = y1 - y0;
         if(dx == 0) {
-            for(int i = Math.min(y0,y1); i < Math.max(y0,y1); i++){
+            for(int i = Math.min(y0,y1); i < Math.max(y0,y1); i++){//linia pionowa
                 drawPoint(x0,i);
             }
         }
         if(dy == 0) {
-            for(int i = Math.min(x0,x1); i < Math.max(x0,x1); i++){
+            for(int i = Math.min(x0,x1); i < Math.max(x0,x1); i++){//linia pozioma
                 drawPoint(i,y0);
             }
         } else {
-            if(Math.abs(dy) < Math.abs(dx)) {
+            if(Math.abs(dy) < Math.abs(dx)) {//linia o wzroscie < 1
                 int x = x0;
                 int y = y0;
                 if(x0 > x1) {
@@ -269,7 +268,7 @@ public class Renderer {
                         y+=yi;
                     }
                 }
-            } else if(Math.abs(dy) > Math.abs(dx)) {
+            } else if(Math.abs(dy) > Math.abs(dx)) {// linia o wzroscie > 1
                 int x = x0;
                 int y = y0;
                 if(y0 > y1) {
@@ -295,7 +294,7 @@ public class Renderer {
                     }
                 }
             } else {
-                while(x0 != x1) {
+                while(x0 != x1) {// linia o wzroscie = 1
                     drawPoint(x0,y0);
                     if(x0 > x1)
                         x0--;
