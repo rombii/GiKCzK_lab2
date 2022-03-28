@@ -1,19 +1,18 @@
-import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.sound.sampled.Line;
 
 public class Renderer {
 
-    public enum LineAlgo { NAIVE, BRESENHAM, BRESENHAM_INT; }
+    public enum LineAlgo { NAIVE, BRESENHAM, BRESENHAM_INT}
 
     private BufferedImage render;
     public int h = 200;
     public int w = 200;
 
-    private String filename;
+    private final String filename;
     private LineAlgo lineAlgo = LineAlgo.NAIVE;
 
     public Renderer(String filename) {
@@ -47,11 +46,12 @@ public class Renderer {
     public void drawLine(int x0, int y0, int x1, int y1) {
         try {
             if (this.lineAlgo == LineAlgo.NAIVE) drawLineNaive(x0, y0, x1, y1);
-        } catch (Exception e) {
+            if (this.lineAlgo == LineAlgo.BRESENHAM) drawLineBresenham(x0, y0, x1, y1);
+            if (this.lineAlgo == LineAlgo.BRESENHAM_INT) drawLineBresenhamInt(x0, y0, x1, y1);
+        }
+        catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        if(this.lineAlgo == LineAlgo.BRESENHAM) drawLineBresenham(x0, y0, x1, y1);
-        if(this.lineAlgo == LineAlgo.BRESENHAM_INT) drawLineBresenhamInt(x0, y0, x1, y1);
     }
 
     public void drawLineNaive(int x0, int y0, int x1, int y1) throws Exception {
@@ -184,7 +184,7 @@ public class Renderer {
                 }
             }
         }
-        if(derr<1) {//oktan 1, 4, 5, 8
+        if(derr<1) {
             int y = y0;
             if(x0<x1) {
                 for (int x = x0; x <= x1; x++) {
@@ -206,7 +206,7 @@ public class Renderer {
                 }
             }
 
-        }else if(derr>1) {//oktan 2, 3, 6, 7
+        }else if(derr>1) {
             int x = x0;
             if(y0<y1) {
                 for (int y = y0; y <= y1; y++) {
@@ -228,7 +228,7 @@ public class Renderer {
                 }
             }
         }
-    }
+    }// Oktany: 1,2,3,4,5,6,7,8
 
     public void drawLineBresenhamInt(int x0, int y0, int x1, int y1) {
         int dx = x1 - x0;

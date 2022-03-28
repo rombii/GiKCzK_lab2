@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 public class App {
 
     String version = "0.02";
-    static Renderer.LineAlgo lineAlgo = Renderer.LineAlgo.NAIVE;
+
     public static void main(String[] args) {
         Renderer mainRenderer = new Renderer(System.getProperty("user.home")+"/render.png");
         if(args.length != 0) {
